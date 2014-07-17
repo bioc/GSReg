@@ -1,0 +1,15 @@
+Package: GSReg
+Version: 0.99.2
+Date: 2014-04-08
+Title: Gene Set Regulation (GS-Reg)
+Author: Bahman Afsari <bahman@jhu.edu>, Elana J. Fertig
+        <ejfertig@jhmi.edu>
+Maintainer: Bahman Afsari <bahman@jhu.edu>
+Depends: R (>= 2.13.1)
+Suggests: GSBenchMark
+Description: A package for gene set analysis based on the variability
+        of expressions. It implements DIfferential RAnk Conservation
+        (DIRAC) and Gene Set tau Regulation (GS-tau-Reg) methods.
+License: GPL-2
+biocViews: GeneRegulation, Pathways, GeneExpression,
+        GeneticVariability, GeneSetEnrichment

@@ -1,0 +1,4 @@
+useDynLib(GSReg,.registration = TRUE)
+
+export(	GSReg.GeneSets.VReg,
+		GSReg.GeneSets.DIRAC)
