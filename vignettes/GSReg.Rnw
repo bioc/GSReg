@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\VignetteIndexEntry{Working with the GSReg package}
-%\VignetteKeywords{Gene Set Analysis, Analysis of Variance}
+%\VignetteKeywords{Gene Set Analysis, Analysis of Variation}
 %\VignettePackage{GSReg}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -102,12 +102,12 @@ options(continue=" ")
 \section{ {\bf {Introduction}} }
 The \Rpackage{GSReg} package allows to analyze pathways based on the variability of the expression of sets of genes that are targets of those pathways. Basing this set statistic on variability enables inference of dysregulated pathways in diseases, including notably cancers. The first set statistic for gene variability was in the work of Eddy and his colleagues (see \cite{DIRAC2010}) which used a ranked based methodology called {\it DIRAC}. {\it DIRAC} calculates
 a measure of variability of the ordering of the expression of genes in a pathway for specific phenotype. The basic idea
-behind {\it DIRAC} is to generate a template for the pair-wise comparisons of gene expressions of a pathway within a phnotype. DIRAC caculates a measure of the variability of the ordering within the phenotype, i.e. the expected distance ofa sample from the phenotype and the template of the phenotype. In mathematical terms, if we denote denote two i.i.d. samples from the same phenotypes by $X$ and $X'$ and $D$ Kendall-$\tau$-distance on the specific pathways, then the GSVReg statistic is $E(D(X,X'))$. It identifies significantly dysregulated pathways by estimating p-values from a permutation test. 
+behind {\it DIRAC} is to generate a template for the pair-wise comparisons of gene expressions of a pathway within a phenotype. DIRAC calculates a measure of the variability of the ordering within the phenotype, i.e. the expected distance of a sample from the phenotype and the template of the phenotype. In mathematical terms, if we denote denote two i.i.d. samples from the same phenotypes by $X$ and $X'$ and $D$ Kendall-$\tau$-distance on the specific pathways, then the EVA statistic is $E(D(X,X'))$. It identifies significantly dysregulated pathways by estimating p-values from a permutation test. 
 Eddy et al. found that more pathological phenotypes usually have more pathways with higher variability compared to less pathological phenotypes. 
 \vspace{5 mm}
 
 
-However, the permutation test in DIRAC is computationally intensive and reaching low p-values may be impractical since they require a huge number of permutations. Low p-values are required for multiple hypothesis correction. A similar measure of variability of the orderings of gene sets was proposed in \cite{AfsariDiss}. This method approximates the p-value theoretically,  without a permutation test. This method is based on Kendall-$\tau$ distance \cite{kendalltaudistance} and the theory of U-Statistics, thus we call this method Gene Set Variation-Regulation (or in short GSVReg). Specifically, Kendall-$\tau$ distance between two expression profiles counts the number of disagreeing pairwise comparisons between two profiles. The GsVReg measures the variability of the gene expression of pathway genes from a phenotype by calculating the expectation of Kendall-$\tau$ distance between two random samples from the phenotype. GSVReg then identifies if the variability is significantly different across two phenotypes. To approximate this p-value GSVReg applies a U-Statistic Theory approach.
+However, the permutation test in DIRAC is computationally intensive and reaching low p-values may be impractical since they require a huge number of permutations. Low p-values are required for multiple hypothesis correction. A similar measure of variability of the orderings of gene sets was proposed in \cite{AfsariDiss}. This method approximates the p-value theoretically,  without a permutation test. This method is based on Kendall-$\tau$ distance \cite{kendalltaudistance} and the theory of U-Statistics, thus we call this method Gene Set Expression Variation Analysis (or in short EVA). Specifically, Kendall-$\tau$ distance between two expression profiles counts the number of disagreeing pairwise comparisons between two profiles. The EVA measures the variability of the gene expression of pathway genes from a phenotype by calculating the expectation of Kendall-$\tau$ distance between two random samples from the phenotype. EVA then identifies if the variability is significantly different across two phenotypes. To approximate this p-value EVA applies a U-Statistic Theory approach.
 
 %\vspace{5 mm}
 
@@ -120,9 +120,9 @@ However, the permutation test in DIRAC is computationally intensive and reaching
 The \Rpackage{GReg} package contains two following utilities:
 
 \begin{enumerate}
-  \item Identifying the dysregulated pathways with {\it DIRAC} measure of variability. The significance is calculated using permutation test. This is the first time that DIRAC analysis has been implemented in {\it R}. It also is more adaptable to new datasets than the original Matlab code in  \cite{DIRAC2010}.%Also, the original matlab code in \cite{DIRAC2010} is not for users.
+  \item Identifying the dysregulated pathways with {\it DIRAC} measure of variability. The significance is calculated using permutation test. This is the first time that DIRAC analysis has been implemented in {\it R}. It also is more adaptable to new datasets than the original Matlab code in  \cite{DIRAC2010}.%Also, the original Matlab code in \cite{DIRAC2010} is not for users.
   
-  \item Identifying the dysregulated pathways with {\it GSVReg} measure of variability. The significance is approximated through applying U-statistics theory. This is very time efficient and consistent with both {\it DIRAC} and applying permutation test on GSVReg. 
+  \item Identifying the dysregulated pathways with {\it EVA} measure of variability. The significance is approximated through applying U-statistics theory. This is very time efficient and consistent with both {\it DIRAC} and applying permutation test on EVA. 
   %\item Calculates dysregulation using any arbitrary distance and the theoretical p.values applying U-statistics theory.
    
 \end{enumerate}
@@ -214,7 +214,7 @@ genenames[1:10]
 \section{Analysis of the pathways}
 
 
-Here, we demonstrate how to use the GSReg package to compute DIRAC and GSVReg statistics.
+Here, we demonstrate how to use the GSReg package to compute DIRAC and EVA statistics.
 
 %Most pathway analysis methods apply summarizing statistic on the genes in the pathway for both pathways and perform differential expression analysis. However, two methods implemented in this package analyze the internal interaction of the genes. These algorithms perform the analysis of interaction through calculation of some measures of variability of the ordering of the gene expressions of a pathway in samples from a phenotype. Then, they compare this variability measure across phenotypes and if the measures are significantly different, they call the pathway has been dysregulated in one of the phenotypes. An interesting finding from  \cite{DIRAC2010} is that among the pathways identified as dysregulated by {\it DIRAC}, pathways usually have higher variability in more dangerous phenotypes compared to less dangerous. This can be justified by the heterogeneity of pathological phenotypes. 
 
@@ -240,7 +240,7 @@ library(GSReg)
 @
 \vspace{5 mm}
 
-The package also implements the alternative GSVReg statistic in the function \Robject{GSReg.GeneSets.DIRAC}. This function receives gene expression as \Robject{geneexpres}, the pathway information as \Robject{pathways} and phenotypes of samples as a factor with two levels and length equal to column number of \Robject{geneexpres}. {\it DIRAC} uses a permutation test for p-value calculation; so, \Robject{GSReg.GeneSets.DIRAC} receives the number of permutations through (\Robject{Nperm}) with default value equal to 1000.
+The package also implements the alternative EVA statistic in the function \Robject{GSReg.GeneSets.DIRAC}. This function receives gene expression as \Robject{geneexpres}, the pathway information as \Robject{pathways} and phenotypes of samples as a factor with two levels and length equal to column number of \Robject{geneexpres}. {\it DIRAC} uses a permutation test for p-value calculation; so, \Robject{GSReg.GeneSets.DIRAC} receives the number of permutations through (\Robject{Nperm}) with default value equal to 1000.
 \vspace{5 mm}
 <<eval=TRUE, echo=TRUE, cache=FALSE>>=
 Nperm = 10
@@ -263,17 +263,17 @@ hist(DIRACAn$pvalues,xlab="pvalue",main="Hist of pvalues applying DIRAC Analysis
 % print(compspathway10[1,2,1])
 % print(exprsdata[diracpathwayPruned[[10]][1:2],1])
 % @
- \subsection{GSVReg}
+ \subsection{EVA}
  
  
  
- The package also implements the alternative GSVReg statistic in the function \Robject{GSReg.GeneSets.VReg}.  The function requires the similar inputs as \Robject{GSReg.GeneSets.DIRAC} (i.e. \Robject{geneexpres}, \Robject{pathways}, \Robject{phenotypes}) except it does not need \Robject{Nperm} since the p-value is not calculated through permutation test but through the mentioned U-statistic theory approach. 
+ The package also implements the alternative EVA statistic in the function \Robject{GSReg.GeneSets.EVA}.  The function requires the similar inputs as \Robject{GSReg.GeneSets.DIRAC} (i.e. \Robject{geneexpres}, \Robject{pathways}, \Robject{phenotypes}) except it does not need \Robject{Nperm} since the p-value is not calculated through permutation test but through the mentioned U-statistic theory approach. 
 \vspace{5 mm}
 <<>>=
 #Calculating the variance for the pathways
 #Calculate how much it takes to calculate the statistics and their p-value for all pathways
 
-system.time({VarAnKendallV = GSReg.GeneSets.VReg(geneexpres=exprsdata,
+system.time({VarAnKendallV = GSReg.GeneSets.EVA(geneexpres=exprsdata,
   pathways=diracpathways, phenotypes=as.factor(phenotypes)) })
 
 
@@ -285,16 +285,16 @@ The output consists of a list. Each element of the list corresponds to a pathway
 
 \vspace{5 mm}
 
-\subsection{Comparison of DIRAC and GSVReg}
+\subsection{Comparison of DIRAC and EVA}
 
-We ran the following code to compare statistics from DIRAC and from GSVReg.
+We ran the following code to compare statistics from DIRAC and from EVA.
 \vspace{5 mm}
 <<eval=TRUE,echo=TRUE>>=
 Nperm = 10;
 VarAnPerm = vector(mode="list",length=Nperm)
 for( i in seq_len(Nperm))
 {
-  VarAnPerm[[i]] = GSReg.GeneSets.VReg(geneexpres=exprsdata, pathways=diracpathways, 
+  VarAnPerm[[i]] = GSReg.GeneSets.EVA(geneexpres=exprsdata, pathways=diracpathways, 
                                            phenotypes=sample(phenotypes))
 }
 
@@ -326,7 +326,7 @@ for( i in seq_along(VarAnPerm[[1]]))
 
 \end{figure}
  
-The figure represents that the theoretical p-value and p-value calculated from permutation test  in GSVReg are very similar and we can use the theoretical p-value as a surrogate for p-value. Here is the histogram.
+The figure represents that the theoretical p-value and p-value calculated from permutation test  in EVA are very similar and we can use the theoretical p-value as a surrogate for p-value. Here is the histogram.
 <<fig=TRUE>>=
 hist(x=pvalustat,breaks=20,main="P-value Hist of U-Stat",xlim=c(0,1))
 @
@@ -338,12 +338,12 @@ hist(x=pvalustat,breaks=20,main="P-value Hist of U-Stat",xlim=c(0,1))
    \includegraphics{plots-011-1000perm.pdf}
    \caption{Theoretical p-value versus empirical p-value using 1000 permutations.}\label{fig::theoempi}
 \end{figure}
-Figure \ref{fig::theoempi} shows the result of comparing p-value GSVReg computing from 1000 permutation test and approximation using U-statistics theory (offline generated).
+Figure \ref{fig::theoempi} shows the result of comparing p-value EVA computing from 1000 permutation test and approximation using U-statistics theory (offline generated).
 
 To compare with the p-value of the DIRAC analysis, we show the p-values of DIRAC versus U-Statistic methodology:
 <<fig=TRUE>>=
 plot(x=DIRACAn$pvalues,y=pvalustat,xlab ="DIRAC",
-        ylab="GSVReg",main=sprintf("P-value Comparison corr=%2.2g",cor(x=DIRACAn$pvalues,y=pvalustat)))
+        ylab="EVA",main=sprintf("P-value Comparison corr=%2.2g",cor(x=DIRACAn$pvalues,y=pvalustat)))
 
 lmfit = lm(pvalustat~DIRACAn$pvalues-1)
 abline(lmfit)
@@ -376,23 +376,23 @@ eta2 = sapply(VarAnKendallV,function(x) x$E2)[significantPathwaysGSV];
 
 <<eval=TRUE,echo=FALSE,fig=TRUE>>=
   plot(x=DIRACAn$pvalues,y=pvalustat,xlab ="DIRAC",
-        ylab="GSVReg",main=sprintf("P-value Comparison corr=%2.2g",cor(x=DIRACAn$pvalues,y=pvalustat)))
+        ylab="EVA",main=sprintf("P-value Comparison corr=%2.2g",cor(x=DIRACAn$pvalues,y=pvalustat)))
   lmfit = lm(pvalustat~DIRACAn$pvalues-1)
 abline(lmfit)
 @
 
 
-\caption{Comparing p-values GSVReg versus DIRAC. The correlation is 0.88.}\label{fig::DIRAC_vs_G}
+\caption{Comparing p-values EVA versus DIRAC. The correlation is 0.88.}\label{fig::DIRAC_vs_G}
 \end{figure}
 
 
-DIRAC and GSVReg have been shown mathematically similar. The main advantages of the GSVReg is efficiency in calculation as well as easier interpretation. Figure \ref{fig::DIRAC_vs_G} a graphical example of such comparison. One can see that the p-values generated by DIRAC and GSVReg have high correlation, i.e. 0.88. Note that GSVReg is much faster than DIRAC. For example, in this case, we ran the computations on a Lenovo Thinkpad with Core(TM) i7-3720QM Intel CPU @2.6 GHz. For a thousand permutation, the DIRAC analysis took 207.47 seconds while the latter only took 0.3 seconds. Note that for multiple hypothesis adjustment, a thousand permutations may not be satisfactory and we require hundreds of thousand or a million permutation which may not be feasible.  
+DIRAC and EVA have been shown mathematically similar. The main advantages of the EVA is efficiency in calculation as well as easier interpretation. Figure \ref{fig::DIRAC_vs_G} a graphical example of such comparison. One can see that the p-values generated by DIRAC and EVA have high correlation, i.e. 0.88. Note that EVA is much faster than DIRAC. For example, in this case, we ran the computations on a Lenovo Thinkpad with Core(TM) i7-3720QM Intel CPU @2.6 GHz. For a thousand permutation, the DIRAC analysis took 207.47 seconds while the latter only took 0.3 seconds. Note that for multiple hypothesis adjustment, a thousand permutations may not be satisfactory and we require hundreds of thousand or a million permutation which may not be feasible.  
 \vspace{5 mm}
 
 
-Note that it is possible that some of the genes in a pathway are not represented in the expression data or are too short (e.g. less than 5 genes). Both \Robject{GSReg.GeneSets.VReg} and \Robject{GSReg.GeneSets.DIRAC} may ignore such pathways through parameter \Robject{minGeneNum}. Please see the manual for more details.   
+Note that it is possible that some of the genes in a pathway are not represented in the expression data or are too short (e.g. less than 5 genes). Both \Robject{GSReg.GeneSets.EVA} and \Robject{GSReg.GeneSets.DIRAC} may ignore such pathways through parameter \Robject{minGeneNum}. Please see the manual for more details.   
 \vspace{5 mm}
-If we the user wants to compare the results of DIRAC and GSVReg, they can run the following code for plot DIRAC diagram of significantly perturbed pathways: 
+If we the user wants to compare the results of DIRAC and EVA, they can run the following code for plot DIRAC diagram of significantly perturbed pathways: 
 \vspace{5 mm}
 <<eval=FALSE>>=
 DIRACAn =GSReg.GeneSets.DIRAC(exprsdata,diracpathways,phenotypes,Nperm=1000)
@@ -421,7 +421,7 @@ lines(x=c(0,max(mu1,mu2)),y=c(0,max(mu1,mu2)))
 % \caption{The measure of conservation in DIRAC analysis for pathways which were significantly dysregulated.}\label{fig::DIRAC}
 % \end{figure}
 
-Now, if we do the analysis using GSVReg, we have:
+Now, if we do the analysis using EVA, we have:
 \vspace{5 mm}
 <<eval=TRUE,print=TRUE,fig=TRUE>>=
 significantPathwaysGSV = names(which(pvalustat<0.05));
@@ -431,12 +431,12 @@ eta2 = sapply(VarAnKendallV,function(x) x$E2)[significantPathwaysGSV];
 #The dysregulated pathways
 names(eta1)
 plot(x=eta1,y=eta2,xlim=c(0,max(eta1,eta2)),ylim=c(0,max(eta1,eta2)),xlab="normal",ylab="disease",
-     main="(b) GSVReg: Dysregulated pathways")
+     main="(b) EVA: Dysregulated pathways")
 lines(x=c(0,max(eta1,eta2)),y=c(0,max(eta1,eta2)))
 @
 
 \vspace{5 mm}
-Although there is discrepancy in identified dysregulated pathways (p-value<0.05), the general trend found in \cite{DIRAC2010} holds still true. The trend is that usually the dysregulated pathways have higher variability measure in more dangerous phenotypes. The figures reveal that both DIRAC and GSVReg have this property. DIRAC found \Sexpr{length(significantPathwaysDIRAC)} dysregulatd pathways and GSVReg discovered \Sexpr{length(significantPathwaysGSV)} pathways, \Sexpr{length(intersect(significantPathwaysGSV,significantPathwaysDIRAC))} pathways showed up in both analysis, and \Sexpr{length(union(significantPathwaysGSV,significantPathwaysDIRAC))} pathways were discovered totally. 
+Although there is discrepancy in identified dysregulated pathways (p-value<0.05), the general trend found in \cite{DIRAC2010} holds still true. The trend is that usually the dysregulated pathways have higher variability measure in more dangerous phenotypes. The figures reveal that both DIRAC and EVA have this property. DIRAC found \Sexpr{length(significantPathwaysDIRAC)} dysregulatd pathways and EVA discovered \Sexpr{length(significantPathwaysGSV)} pathways, \Sexpr{length(intersect(significantPathwaysGSV,significantPathwaysDIRAC))} pathways showed up in both analysis, and \Sexpr{length(union(significantPathwaysGSV,significantPathwaysDIRAC))} pathways were discovered totally. 
 \vspace{5 mm}
 <<>>=
 print(significantPathwaysGSV)
