@@ -66,7 +66,7 @@ GSReg.Variance <- function(pathwayexp, samplesC1, samplesC2,distFunc =GSReg.kend
   CovE1Cross <- E1DCross - E1^2
   VarEta1 <- 4*((n1*(n1-1))/2*VarD1 + n1*(n1-1)*(n1-2)*CovE1Cross)/((n1*(n1-2))^2)
   
-  dist2 <- GSReg.kendall.tau.distance(pathwayexp[,samplesC2])
+  dist2 <- distFunc(pathwayexp[,samplesC2])
   n2 <- length(samplesC2)
   E2 <- sum(dist2)/(n2*(n2-1))
   Dis2P2 <- sum(dist2^2)
