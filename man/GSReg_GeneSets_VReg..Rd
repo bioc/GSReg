@@ -1,13 +1,13 @@
-\name{GSReg.GeneSets.VReg}
+\name{GSReg.GeneSets.EVA}
 
-\alias{GSReg.GeneSets.VReg}
+\alias{GSReg.GeneSets.EVA}
 
-\title{Performs Gene Set Analysis using U-Statistics Theory for gene set analysis (GSVReg).}
+\title{Performs Gene Set Analysis using Expression Variation Analysis (EVA).}
 
-\description{GSReg.GeneSets.VReg performs modified version DIRAC papers. Using a theoretical analysis, we can calculate p-value which makes extreme low p-values available.  }
+\description{GSReg.GeneSets.EVA performs modified version DIRAC papers. Using a theoretical analysis, we can calculate p-value which makes extreme low p-values available.  }
 
 \usage{
- GSReg.GeneSets.VReg(geneexpres, pathways, phenotypes,minGeneNum=5) 
+ GSReg.GeneSets.EVA(geneexpres, pathways, phenotypes,minGeneNum=5) 
 }
 
 \arguments{
@@ -31,7 +31,7 @@ a list of analysis for all pathways.
 
 \author{Bahman Afsari}
 
-\keyword{Variance Analysis}
+\keyword{Expression Variation Analysis}
 
 \seealso{GSReg.GeneSets.DIRAC,cor}
 
@@ -53,7 +53,7 @@ if(sum(apply(is.nan(exprsdata),1,sum)>0))
 genenames = rownames(exprsdata);
 
 ### DIRAC analysis
-VarAnKendallV = GSReg.GeneSets.VReg(geneexpres=exprsdata,
+VarAnKendallV = GSReg.GeneSets.EVA(geneexpres=exprsdata,
  pathways=diracpathways, phenotypes=as.factor(phenotypes))
 E1 = sapply(VarAnKendallV,function(x) x$E1);
 E2 = sapply(VarAnKendallV,function(x) x$E2);
