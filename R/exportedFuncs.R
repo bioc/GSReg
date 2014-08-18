@@ -4,10 +4,10 @@
 ##########        Elana J. Fertig ##########
 
 ###########################################
-#### GSVReg Analysis Function
+#### EVA Analysis Function
 ###########################################
 
-GSReg.GeneSets.VReg <- function(geneexpres,pathways,phenotypes,minGeneNum = 5 )
+GSReg.GeneSets.EVA <- function(geneexpres,pathways,phenotypes,minGeneNum = 5 )
 {
   #Checking the input data
   GSReg.Check.input(prunedpathways=pathways,exprsdata=geneexpres,phenotypes=phenotypes)
