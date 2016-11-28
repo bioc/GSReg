@@ -8,14 +8,15 @@
 The function calculates the p-value using permutation test; hence, extremely low p-value cannot be reached.}
 
 \usage{
-GSReg.GeneSets.DIRAC(geneexpres, pathways, phenotypes, Nperm = 1000,minGeneNum=5) 
+GSReg.GeneSets.DIRAC(geneexpres, pathways, phenotypes, Nperm = 0, alpha = 0.05, minGeneNum=5) 
 }
 
 \arguments{
 \item{geneexpres}{the matrix of gene expressions. The rownames must represent gene names and the columns represent samples. There must not be any missing values. Please use imputation or remove the genes with missing values.}
 \item{pathways}{a list containing pathway information. Each element represents a pathway as a character vector. The genes shown in the pathway must be present in geneexpres. Please prune the genes in pathways using GSReg.Prune before applying this function.}
 \item{phenotypes}{a binary factor containing the phenotypes for samples in geneexpres; hence, the column number of geneexpres and the length of phenotypes must be equal. }
-\item{Nperm}{The number of permutation tests required for p-value calculation. If Nperm==0 then no p-value is calculated.}
+\item{Nperm}{The number of permutation tests required for p-value calculation. If Nperm==0 then the function reports a normal approximation of the p-value.}
+\item{alpha}{A parameter smoothes the template estimate. The template corresponding to a comparison is 1, if the probability of the comparison of the two genes is bigger than 0.5 +alpha/n (where n is the number of samples in the phenotype), and otherwise zero.}
 \item{minGeneNum}{the minimum number of genes required in a pathway.}
 }
 
@@ -45,7 +46,7 @@ genenames = rownames(exprsdata);
 
 
 ### DIRAC analysis
-DIRAna = GSReg.GeneSets.DIRAC(pathways=diracpathways,geneexpres=exprsdata,Nperm=10,phenotypes=phenotypes)
+DIRAna = GSReg.GeneSets.DIRAC(pathways=diracpathways,geneexpres=exprsdata,Nperm=0,phenotypes=phenotypes)
 dysregulatedpathways = rbind(DIRAna$mu1[which(DIRAna$pvalues<0.05)],
 DIRAna$mu2[which(DIRAna$pvalues<0.05)],DIRAna$pvalues[which(DIRAna$pvalues<0.05)]);
 rownames(dysregulatedpathways)<-c("mu1","mu2","pvalues");

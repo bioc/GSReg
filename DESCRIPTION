@@ -1,15 +1,24 @@
 Package: GSReg
-Version: 1.9.0
-Date: 2014-04-08
+Version: 1.9.1
+Date: 2016-11-28
 Title: Gene Set Regulation (GS-Reg)
 Author: Bahman Afsari <bahman@jhu.edu>, Elana J. Fertig
-        <ejfertig@jhmi.edu>
+    <ejfertig@jhmi.edu>
 Maintainer: Bahman Afsari <bahman@jhu.edu>
-Depends: R (>= 2.13.1)
-Suggests: GSBenchMark
+Depends:
+    R (>= 2.13.1),
+    Homo.sapiens,
+    org.Hs.eg.db,
+    GenomicFeatures,
+    AnnotationDbi
+Suggests:
+    GenomicRanges,
+    GSBenchMark
 Description: A package for gene set analysis based on the variability
-        of expressions. It implements DIfferential RAnk Conservation
-        (DIRAC) and gene set Expression Variation Analysis (EVA) methods.
+    of expressions as well as a method to detect Alternative Splicing Events .
+	It implements DIfferential RAnk Conservation (DIRAC) and 
+	gene set Expression Variation Analysis (EVA) methods. For detecting Differentially Spliced genes, 
+	it provides an implementation of the Spliced-EVA (SEVA). 
 License: GPL-2
 biocViews: GeneRegulation, Pathways, GeneExpression,
-        GeneticVariability, GeneSetEnrichment
+    GeneticVariability, GeneSetEnrichment, AlternativeSplicing

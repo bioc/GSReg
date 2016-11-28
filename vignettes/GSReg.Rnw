@@ -1,6 +1,5 @@
-%%% Bahman Afsari
 %%% Elana J. Fertig
-%%% April 08 2014
+%%% November 28 2016
 %%% Baltimore
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -102,7 +101,7 @@ options(continue=" ")
 \section{ {\bf {Introduction}} }
 The \Rpackage{GSReg} package allows to analyze pathways based on the variability of the expression of sets of genes that are targets of those pathways. Basing this set statistic on variability enables inference of dysregulated pathways in diseases, including notably cancers. The first set statistic for gene variability was in the work of Eddy and his colleagues (see \cite{DIRAC2010}) which used a ranked based methodology called {\it DIRAC}. {\it DIRAC} calculates
 a measure of variability of the ordering of the expression of genes in a pathway for specific phenotype. The basic idea
-behind {\it DIRAC} is to generate a template for the pair-wise comparisons of gene expressions of a pathway within a phenotype. DIRAC calculates a measure of the variability of the ordering within the phenotype, i.e. the expected distance of a sample from the phenotype and the template of the phenotype. In mathematical terms, if we denote denote two i.i.d. samples from the same phenotypes by $X$ and $X'$ and $D$ Kendall-$\tau$-distance on the specific pathways, then the EVA statistic is $E(D(X,X'))$. It identifies significantly dysregulated pathways by estimating p-values from a permutation test. 
+behind {\it DIRAC} is to generate a template for the pair-wise comparisons of gene expressions of a pathway within a phenotype. DIRAC calculates a measure of the variability of the ordering within the phenotype, i.e. the expected distance of a sample from the phenotype and the template of the phenotype. In mathematical terms, if we denote denote two i.i.d. samples from the same phenotypes by $X$ and $X'$ and $D$ Kendall-$\tau$-distance on the specific pathways, then the EVA \cite{EVA2014} statistic is $E(D(X,X'))$. It identifies significantly dysregulated pathways by estimating p-values from a permutation test. 
 Eddy et al. found that more pathological phenotypes usually have more pathways with higher variability compared to less pathological phenotypes. 
 \vspace{5 mm}
 
@@ -240,18 +239,47 @@ library(GSReg)
 @
 \vspace{5 mm}
 
-The package also implements the alternative EVA statistic in the function \Robject{GSReg.GeneSets.DIRAC}. This function receives gene expression as \Robject{geneexpres}, the pathway information as \Robject{pathways} and phenotypes of samples as a factor with two levels and length equal to column number of \Robject{geneexpres}. {\it DIRAC} uses a permutation test for p-value calculation; so, \Robject{GSReg.GeneSets.DIRAC} receives the number of permutations through (\Robject{Nperm}) with default value equal to 1000.
+The package also implements the alternative EVA statistic in the function \Robject{GSReg.GeneSets.DIRAC}. This function receives gene expression as \Robject{geneexpres}, the pathway information as \Robject{pathways} and phenotypes of samples as a factor with two levels and length equal to column number of \Robject{geneexpres}. {\it DIRAC} uses can use either a permutation test or normal approximation for p-value calculation; so, \Robject{GSReg.GeneSets.DIRAC} receives the number of permutations through (\Robject{Nperm}) with default value equal to 0 which indicates the normal approximation. 
 \vspace{5 mm}
 <<eval=TRUE, echo=TRUE, cache=FALSE>>=
 Nperm = 10
-system.time({DIRACAn =GSReg.GeneSets.DIRAC(exprsdata,diracpathways,phenotypes,Nperm=Nperm)})
+system.time({DIRACperm =GSReg.GeneSets.DIRAC(exprsdata,diracpathways,phenotypes,Nperm=Nperm)})
+system.time({DIRACAn =GSReg.GeneSets.DIRAC(exprsdata,diracpathways,phenotypes)})
+
 @
 Here is the histogram  of the DIRAC p-values:
 <<eval=TRUE, echo=TRUE, cache=FALSE,fig=TRUE>>=
 hist(DIRACAn$pvalues,xlab="pvalue",main="Hist of pvalues applying DIRAC Analysis.")
 @
 
+To check if the approximations are reliable, we plot the z-scores calculated to approximate p-values versus the p-values from the permutation tests. 
 
+\begin{figure}
+
+<<eval=TRUE,echo=TRUE,fig=TRUE,pdf=TRUE>>=
+
+plot(x=abs(DIRACAn$zscores),y=DIRACperm$pvalues,xlab="|Z-score|",
+     ylab="p-value",col="red1",main="DIRAC p-value comparisons")
+zscorelin <- seq(min(abs(DIRACAn$zscores)),max(abs(DIRACAn$zscores)),by = 0.1)
+pvaltheoretic = (1-pnorm(zscorelin))*2
+lines(x=zscorelin,y=pvaltheoretic,type="l",pch=50,lty=5,col="darkblue")
+legend("topright",legend=c("permutation test","Normal Approx."),
+       col=c("red1","blue"),text.col=c("red1","blue"),
+       lty=c(NA,1),lwd=c(NA,2.5),pch=c(21,NA))
+@
+\caption{Comparing p-value from permutation test and normal approximation with only \Sexpr{Nperm} permutations. }\label{fig::theoempi10}
+
+\end{figure}
+ 
+
+
+
+\begin{figure}
+%   % Requires \usepackage{graphicx}
+   \includegraphics{DIRAC_comparison_squamous_GDS2520.pdf}
+   \caption{Theoretical p-value versus empirical p-value using 1000 permutations.}\label{fig::theoempiDIRAC}
+\end{figure}
+Figure \ref{fig::theoempiDIRAC} shows the result of comparing p-value DIRAC computing from 1000 permutation test and approximation using normal approximation (offline generated). 
 
 
 %Since both DIRAC and Kendall-$\tau$ are based on ranks and equivalently on comparisons, \Rpackage{GSReg} provides a fast 
@@ -438,7 +466,7 @@ lines(x=c(0,max(eta1,eta2)),y=c(0,max(eta1,eta2)))
 \vspace{5 mm}
 Although there is discrepancy in identified dysregulated pathways (p-value<0.05), the general trend found in \cite{DIRAC2010} holds still true. The trend is that usually the dysregulated pathways have higher variability measure in more dangerous phenotypes. The figures reveal that both DIRAC and EVA have this property. DIRAC found \Sexpr{length(significantPathwaysDIRAC)} dysregulatd pathways and EVA discovered \Sexpr{length(significantPathwaysGSV)} pathways, \Sexpr{length(intersect(significantPathwaysGSV,significantPathwaysDIRAC))} pathways showed up in both analysis, and \Sexpr{length(union(significantPathwaysGSV,significantPathwaysDIRAC))} pathways were discovered totally. 
 \vspace{5 mm}
-<<>>=
+<<eval=TRUE,print=TRUE,fig=FALSE>>=
 print(significantPathwaysGSV)
 print(significantPathwaysDIRAC)
 @
@@ -512,6 +540,65 @@ print(significantPathwaysDIRAC)
 %@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\subsection{Splice-EVA Analysis}
+
+SEVA needs junction overlap matrices. This can be done by function \Robject{GSReg.OverlapJunction}. Here is a piece of code which shows how to use this function.
+<<eval=TRUE,print=TRUE,fig=FALSE>>=
+require('Homo.sapiens')
+require('org.Hs.eg.db')
+require('GenomicRanges')
+
+data(juncExprsSimulated)
+
+
+overlapMat <- GSReg.OverlapJunction(juncExprs =  junc.RPM.Simulated,
+                                    geneexpr = geneExrsGSReg)
+print(overlapMat[["Rest"]][["CMPK1"]])
+
+@
+
+Another important function is kendall-$\tau$ restricted. 
+<<eval=TRUE,print=TRUE,fig=FALSE>>=
+V <- cbind(c(1,5,3),c(3,2,1))
+rownames(V) <- c("F1","F2","F3")
+colnames(V) <- c("S1","S2")
+GSReg.kendall.tau.distance(V)
+
+myRest1 <- cbind(c(0,1,1),c(1,0,1),c(1,1,0))
+rownames(myRest1) <- rownames(V) 
+colnames(myRest1) <- rownames(V) 
+
+GSReg.kendall.tau.distance.restricted(V,myRest1)
+
+GSReg.kendall.tau.distance(V)
+
+myRest2 <- cbind(c(0,0,1),c(0,0,1),c(1,1,0))
+rownames(myRest2) <- rownames(V) 
+colnames(myRest2) <- rownames(V) 
+GSReg.kendall.tau.distance.restricted(V,myRest2)
+
+
+Temp1 <- cbind(c(0,1,1),c(0,0,0),c(0,1,0))
+rownames(Temp1) <- rownames(V)
+colnames(Temp1) <- rownames(V)
+
+GSReg.kendall.tau.distance.template(V,Temp = Temp1)
+@
+Now, we can use SEVA function and use the data from the paper \cite{LAMA3}.
+<<eval=TRUE,print=FALSE,fig=FALSE>>=
+
+data(juncExprsSimulated)
+SEVAjunc <- GSReg.SEVA(juncExprs = junc.RPM.Simulated,
+                       phenoVect = phenotypes,
+                       geneexpr = geneExrsGSReg)
+                       
+print(sapply(SEVAjunc,function(x) x$pvalue))
+#if you want to check Translational as well you can use 2 other p-values
+print(sapply(SEVAjunc,function(x) x$pvalueTotal))
+
+@  
+
 \pagebreak
 
 \section{ {\bf {System Information}}}

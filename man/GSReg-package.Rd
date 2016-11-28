@@ -7,9 +7,8 @@
 \title{A package for Gene Set Analysis based on the variability of gene expression in different phenotypes.}
 
 \description{
-  The GSReg package applies the analysis of variance among phenotypes for each gene set. Specially, the user can use Differential Rank Conservation (DIRAC) (Eddy et al. 2010) 
-  and a modified version which allows for efficient and easy p value calculation. Both DIRAC and its modified version are rank-based methods, i.e. they only consider the ordering of the expressions
-  within the pathway.  
+  The GSReg package applies the analysis of variety among phenotypes for each gene set from gene expression as well as alternative splicing from junction expression. The user can also use Differential Rank Conservation (DIRAC) (Eddy et al. 2010) 
+  and a modified version which allows for efficient and easy p value calculation. Both DIRAC and its modified version are rank-based methods, i.e. they only consider the ordering of the expressions within the pathway.  
 }
 
 
@@ -21,6 +20,8 @@
   {B)  Calculate the DIRAC measure and p-value for it based on permutation test;}
   
   {C)  Calculate for a modified DIRAC method and a fast-efficient p-valuebased on U-Statistic theory;}
+  
+  {D)  Alternative Splicing Events in genes from a phenotype to other phenotype using their junction expression;}
 
   
   

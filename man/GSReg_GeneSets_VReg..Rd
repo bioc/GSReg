@@ -22,10 +22,14 @@
 a list of analysis for all pathways.
 \item{$E1}{the modified variance on the pathway within the samples from levels(phenotypes)[1].}
 \item{$E2}{the modified variance on the pathway within the samples from levels(phenotypes)[2].}
+\item{$E12}{the modified variance on the pathway across the samples from levels(phenotypes)[1] tolevels(phenotypes)[2].}
 \item{$VarEta1}{the estimation of the modified variance on the pathway within the samples from levels(phenotypes)[1].}
 \item{$VarEta2}{the estimation of the modified variance on the pathway within the samples from levels(phenotypes)[2].}
 \item{$zscore}{zscore for the modified variance.}
-\item{$pvalues}{theoretical p-value from the zscore.}
+\item{$pvalue}{theoretical p-value for null E1 = E2. (Standard EVA).}
+\item{$pvalueD12D1}{theoretical p-value for null E1 = E12.}
+\item{$pvalueD12D2}{theoretical p-value for null E2 = E12.}
+\item{$pvalueTotal}{Bonferonni corrected p-value of the three p-values. }
 
 }
 
