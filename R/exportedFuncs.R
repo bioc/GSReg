@@ -139,7 +139,7 @@ GSReg.kendall.tau.distance.template <- function(V, Temp){
 ##################################################
 
 
-GSReg.OverlapJunction <- function(juncExprs,
+GSReg.overlapJunction <- function(juncExprs,
                                   GenestoStudy=NULL,
                                   geneexpr=NULL,
                                   minmeanloggeneexp= 3,
