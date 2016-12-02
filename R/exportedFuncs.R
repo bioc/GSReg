@@ -273,7 +273,7 @@ GSReg.SEVA <- function(juncExprs,
   
   
   
-  juncMatrices <- GSReg.OverlapJunction(juncExprs,
+  juncMatrices <- GSReg.overlapJunction(juncExprs,
                                         sparse = F, ...)
   
   

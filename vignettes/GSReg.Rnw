@@ -543,7 +543,7 @@ print(significantPathwaysDIRAC)
 
 \subsection{Splice-EVA Analysis}
 
-SEVA needs junction overlap matrices. This can be done by function \Robject{GSReg.OverlapJunction}. Here is a piece of code which shows how to use this function.
+SEVA needs junction overlap matrices. This can be done by function \Robject{GSReg.overlapJunction}. Here is a piece of code which shows how to use this function.
 <<eval=TRUE,print=TRUE,fig=FALSE>>=
 require('Homo.sapiens')
 require('org.Hs.eg.db')
@@ -552,7 +552,7 @@ require('GenomicRanges')
 data(juncExprsSimulated)
 
 
-overlapMat <- GSReg.OverlapJunction(juncExprs =  junc.RPM.Simulated,
+overlapMat <- GSReg.overlapJunction(juncExprs =  junc.RPM.Simulated,
                                     geneexpr = geneExrsGSReg)
 print(overlapMat[["Rest"]][["CMPK1"]])
 

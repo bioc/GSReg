@@ -17,10 +17,10 @@ void kendalltaudistFromTemp( double *vect, int *np,int *mp, int *temp, double *d
     // comp    should be of size dimN^2*dimM
     int n = *np;
     int m = *mp;
-    bool iseqk,iseql;
+    
     //Internal variables
-    int i,j,k,l;//indices
-    double d_ijk, d_ijl;
+    int i,j,k;//indices
+    double d_ijk;
 
 
     for(k=0;k<m;k++)
